@@ -20,6 +20,7 @@ function createMenu(x, y)
 
 	var menu = document.createElement("div");
 	menu.id = MENU_ID;
+	menu.align = "left";
 	menu.style["position"] = "absolute";
 	menu.style["left"] = x + "px";
 	menu.style["top"] = (MENU_LOCATION_OFFSET + y) + "px";
@@ -32,12 +33,15 @@ function createMenu(x, y)
 	document.body.appendChild(menu);
 	
 	var base64_text = document.createElement("div");
-	base64_text.innerHTML = "Base64:" + utf8_to_b64(text);
+	base64_text.align = "left";
+	base64_text.innerHTML = "Base64:<br/>" + utf8_to_b64(text);
 	menu.appendChild(base64_text);
+	menu.appendChild(document.createElement("br"));
 	var re = new RegExp("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$");
 	if(re.test(text)){
 		var real_text = document.createElement("div");
-		real_text.innerHTML = "Real text:" + b64_to_utf8(text);
+		real_text.align = "left";
+		real_text.innerHTML = "Real text:<br/>" + b64_to_utf8(text);
 		menu.appendChild(real_text);	
 	}
 }
