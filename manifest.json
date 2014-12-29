@@ -1,0 +1,19 @@
+﻿{  
+  "name": "Urasekai",
+  "version": "0.1",
+  "manifest_version": 2,
+  
+  "description": "划词编码/解码base64",
+  "icons": {
+      "16": "images/16.png",
+      "48": "images/48.png",
+      "128": "images/128.png"
+   },
+  "update_url": "http://clients2.google.com/service/update2/crx",
+
+  "content_scripts": [ {
+      "js": [ "content.js" ],
+      "matches": [ "\u003Call_urls\u003E" ],
+      "all_frames": true
+   } ]
+}
