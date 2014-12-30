@@ -1,6 +1,7 @@
 ﻿var MOUSE_LEFT = 0;
 var MENU_ID = "menu_id";
 var MENU_LOCATION_OFFSET = 14;
+var TEXT_COLOR = "#FFDAC8";
 
 function utf8_to_b64( str ) {
   return window.btoa(unescape(encodeURIComponent( str )));
@@ -10,18 +11,8 @@ function b64_to_utf8( str ) {
   return decodeURIComponent(escape(window.atob( str )));
 }
 
-function getSelectionContent() { // http://snipplr.com/view/10912/get-html-of-selection/
-    var userSelection = window.getSelection();
-    if (userSelection.isCollapsed)
-        return '';
-    else {
-        return userSelection.toString();
-    }
-}
-
-function createMenu(x, y)
-{
-	var text = getSelectionContent();
+function createMenu(x, y){
+	var text = window.getSelection().toString();
 	if (text == "")
 	{
 		return;
@@ -35,7 +26,7 @@ function createMenu(x, y)
 	menu.style["top"] = (MENU_LOCATION_OFFSET + y) + "px";
 	menu.style["z-index"] = 0xffffffff;
 	menu.style["width"] = "200px";
-	menu.style["background-color"] = "#00FF00";
+	menu.style["background-color"] = TEXT_COLOR;
 	menu.style["padding"] = "5px";
 	menu.style["line-height"] = "normal";
 	menu.style["word-break"] = "break-all";
