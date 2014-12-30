@@ -10,9 +10,18 @@ function b64_to_utf8( str ) {
   return decodeURIComponent(escape(window.atob( str )));
 }
 
+function getSelectionContent() { // http://snipplr.com/view/10912/get-html-of-selection/
+    var userSelection = window.getSelection();
+    if (userSelection.isCollapsed)
+        return '';
+    else {
+        return userSelection.toString();
+    }
+}
+
 function createMenu(x, y)
 {
-	var text = document.getSelection().toString();
+	var text = getSelectionContent();
 	if (text == "")
 	{
 		return;
