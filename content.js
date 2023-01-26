@@ -1,15 +1,7 @@
 ﻿var MOUSE_LEFT = 0;
 var MENU_ID = "menu_id";
 var MENU_LOCATION_OFFSET = 14;
-var TEXT_COLOR = "#FFDAC8";
-
-function utf8_to_b64( str ) {
-  return window.btoa(unescape(encodeURIComponent( str )));
-}
-
-function b64_to_utf8( str ) {
-  return decodeURIComponent(escape(window.atob( str )));
-}
+var TEXT_COLOR = "#EDF2F7";
 
 function createMenu(x, y){
 	var text = window.getSelection().toString();
@@ -25,25 +17,50 @@ function createMenu(x, y){
 	menu.style["left"] = x + "px";
 	menu.style["top"] = (MENU_LOCATION_OFFSET + y) + "px";
 	menu.style["z-index"] = 0xffffffff;
-	menu.style["width"] = "200px";
+	menu.style["width"] = "fit-content";//"1000px";
 	menu.style["background-color"] = TEXT_COLOR;
 	menu.style["padding"] = "5px";
 	menu.style["line-height"] = "normal";
 	menu.style["word-break"] = "break-all";
 	document.body.appendChild(menu);
 	
-	var base64_text = document.createElement("div");
-	base64_text.align = "left";
-	base64_text.innerHTML = "Base64:<br/>" + utf8_to_b64(text);
-	menu.appendChild(base64_text);
-	menu.appendChild(document.createElement("br"));
-	var re = new RegExp("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$");
-	if(re.test(text)){
-		var real_text = document.createElement("div");
-		real_text.align = "left";
-		real_text.innerHTML = "Real text:<br/>" + b64_to_utf8(text);
-		menu.appendChild(real_text);	
-	}
+	var result_div = document.createElement("div");
+	result_div.align = "left";
+	result_div.innerHTML = 'Searching ' + text + ' ...';
+	menu.appendChild(result_div);
+
+	var request_url = 'https://sukebei.nyaa.si/?f=0&c=2_2&q=' + text;
+	fetch(request_url).then(r => r.text()).then(result => {
+		var result_new = result.replaceAll('<i class="fa fa-fw fa-magnet"></i>', '⬇️️')
+    	var doc = new DOMParser().parseFromString(result_new, "text/html");
+    	//console.log(doc);
+    	var table_responsive = doc.getElementsByClassName('table-responsive')[0];
+    	if (table_responsive) {
+    	    var table = table_responsive.getElementsByTagName('table')[0];
+	    	//console.log(table);
+	    	var thead = table.getElementsByTagName("thead")[0];
+	    	thead.remove();
+	    	var tr_list = table.getElementsByTagName("tr");
+		    for (var i = 0; i < tr_list.length; i++) {
+			    var td_list = tr_list[i].getElementsByTagName("td");
+				if (td_list.length > 0) {
+				    //td_list[7].remove();
+					td_list[6].remove();
+					td_list[5].remove();
+					td_list[2].getElementsByTagName("a")[0].remove();
+					var a = td_list[1].getElementsByTagName("a")[0];
+					td_list[1].innerHTML = a.title.substr(0, 40) + '...';
+					a.remove();
+					td_list[0].remove();
+				}
+			}
+			result_div.remove();
+			menu.appendChild(table);
+		}
+		else {
+			result_div.innerHTML = "Sorry. The resource is not ready";
+		}
+	})
 }
 
 function isInside(region, x, y){
